@@ -2,6 +2,7 @@ import { defineConfig } from "vite";
 
 export default defineConfig({
   // Nécessaire pour que Vite serve les WASM sans les transformer
+  base: "/msdf-font-generator/",
   optimizeDeps: {
     exclude: ["three-msdf-text-utils"],
   },
