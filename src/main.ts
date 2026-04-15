@@ -110,8 +110,10 @@ async function handleGenerate(file: File) {
   const fontSize = getFontSize();
   const texSize = getTextureSize();
 
+  console.log(file);
+
   try {
-    const { font, atlas } = await generateMSDF(fontUrl, {
+    const { font, atlas } = await generateMSDF(fontUrl as unknown as File, {
       workerUrl: "/msdfgen/worker.bundled.js",
       wasmUrl: "/msdfgen/msdfgen.wasm",
       charset,
