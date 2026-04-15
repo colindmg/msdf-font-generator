@@ -8,19 +8,19 @@
   </head>
   <body>
     <main>
-      <h1>MSDF Font Generator</h1>
-      <p class="subtitle">
-        Upload a <code>.ttf</code> font → get your MSDF atlas + BMFont data
-      </p>
-
       <div class="workspace">
-        <!-- ── Left panel : Upload ── -->
+        <!-- ── Left panel : Upload + Config ── -->
         <div class="panel">
           <div class="panel__header">
             <span class="panel__dot"></span>
             <span class="panel__title">Input · TTF Font</span>
           </div>
           <div class="panel__body">
+            <h1>MSDF Font Generator</h1>
+            <p class="subtitle">
+              Upload a <code>.ttf</code> font → configure → get your MSDF atlas
+              + BMFont data
+            </p>
             <div id="dropzone">
               <span class="dropzone__icon">🔤</span>
               <span class="dropzone__label">
@@ -29,58 +29,158 @@
               <input type="file" id="fileInput" accept=".ttf" hidden />
             </div>
 
-            <div class="progress-container">
-              <div class="progress-track">
-                <div id="progressBar" class="progress-fill"></div>
+            <!-- Config fields -->
+            <div class="config-section">
+              <div class="config-field">
+                <label class="config-label" for="charsetInput">
+                  Charset
+                  <span>characters to include in the atlas</span>
+                </label>
+                <textarea
+                  id="charsetInput"
+                  class="config-textarea"
+                  spellcheck="false"
+                  autocomplete="off"
+                >
+ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzéàèêâù0123456789.,!?:;'"-()[]{}@#$%&*+=/<>\| </textarea
+                >
               </div>
-              <span id="progressText">0%</span>
+
+              <div class="config-field">
+                <label class="config-label">
+                  Font Size
+                  <span>px — powers of 2</span>
+                </label>
+                <div class="pow2-control" id="fontSizeControl">
+                  <input
+                    type="radio"
+                    name="fontSize"
+                    id="fs16"
+                    value="16"
+                  /><label for="fs16">16</label>
+                  <input
+                    type="radio"
+                    name="fontSize"
+                    id="fs32"
+                    value="32"
+                  /><label for="fs32">32</label>
+                  <input
+                    type="radio"
+                    name="fontSize"
+                    id="fs64"
+                    value="64"
+                    checked
+                  /><label for="fs64">64</label>
+                  <input
+                    type="radio"
+                    name="fontSize"
+                    id="fs128"
+                    value="128"
+                  /><label for="fs128">128</label>
+                  <input
+                    type="radio"
+                    name="fontSize"
+                    id="fs256"
+                    value="256"
+                  /><label for="fs256">256</label>
+                </div>
+              </div>
+
+              <div class="config-field">
+                <label class="config-label">
+                  Texture Size
+                  <span>px — powers of 2</span>
+                </label>
+                <div class="pow2-control" id="textureSizeControl">
+                  <input
+                    type="radio"
+                    name="textureSize"
+                    id="ts256"
+                    value="256"
+                  /><label for="ts256">256</label>
+                  <input
+                    type="radio"
+                    name="textureSize"
+                    id="ts512"
+                    value="512"
+                    checked
+                  /><label for="ts512">512</label>
+                  <input
+                    type="radio"
+                    name="textureSize"
+                    id="ts1024"
+                    value="1024"
+                  /><label for="ts1024">1024</label>
+                  <input
+                    type="radio"
+                    name="textureSize"
+                    id="ts2048"
+                    value="2048"
+                  /><label for="ts2048">2048</label>
+                </div>
+              </div>
             </div>
+            <!-- /config-section -->
 
-            <p id="status" class="status status--info"></p>
-
-            <div id="downloads" class="downloads"></div>
+            <!-- Generate button -->
+            <button id="generateBtn" class="generate-btn" disabled>
+              <span class="generate-btn__icon">⚡</span>
+              <span class="generate-btn__label">Generate Atlas</span>
+            </button>
           </div>
         </div>
 
         <!-- ── Right panel : Preview ── -->
-        <div class="panel preview-panel">
-          <div class="panel__header">
-            <span class="panel__dot"></span>
-            <span class="panel__title">Output · MSDF Atlas</span>
-          </div>
-          <div class="panel__body">
-            <div id="previewContainer" class="preview-placeholder">
-              <svg
-                width="48"
-                height="48"
-                viewBox="0 0 48 48"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <rect
-                  x="4"
-                  y="4"
-                  width="40"
-                  height="40"
-                  rx="4"
-                  stroke="currentColor"
-                  stroke-width="2"
-                />
-                <path
-                  d="M14 34L20 22L26 30L30 24L34 34H14Z"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linejoin="round"
-                />
-                <circle
-                  cx="32"
-                  cy="18"
-                  r="3"
-                  stroke="currentColor"
-                  stroke-width="2"
-                />
-              </svg>
-              <span>Atlas preview will appear here</span>
+        <div class="right-column">
+          <div class="panel preview-panel">
+            <div class="panel__header">
+              <span class="panel__dot"></span>
+              <span class="panel__title">Output · MSDF Atlas</span>
+            </div>
+            <div class="panel__body">
+              <!-- Progress -->
+              <div class="progress-container">
+                <div class="progress-track">
+                  <div id="progressBar" class="progress-fill"></div>
+                </div>
+                <span id="progressText">0%</span>
+              </div>
+
+              <p id="status" class="status status--info"></p>
+              <div id="previewContainer" class="preview-placeholder">
+                <svg
+                  width="48"
+                  height="48"
+                  viewBox="0 0 48 48"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect
+                    x="4"
+                    y="4"
+                    width="40"
+                    height="40"
+                    rx="4"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  />
+                  <path
+                    d="M14 34L20 22L26 30L30 24L34 34H14Z"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linejoin="round"
+                  />
+                  <circle
+                    cx="32"
+                    cy="18"
+                    r="3"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  />
+                </svg>
+                <span>Atlas preview will appear here</span>
+              </div>
+              <div id="downloads" class="downloads"></div>
             </div>
           </div>
         </div>

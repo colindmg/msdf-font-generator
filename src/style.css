@@ -1,6 +1,6 @@
 /* ============================================================
-  MSDF Font Generator — Dark Lab Theme
-============================================================ */
+   MSDF Font Generator — Dark Lab Theme
+   ============================================================ */
 
 @import url("https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Syne:wght@700;800&display=swap");
 
@@ -38,6 +38,11 @@
   padding: 0;
 }
 
+html,
+body {
+  overscroll-behavior: none;
+}
+
 html {
   height: 100%;
 }
@@ -50,7 +55,6 @@ body {
   font-size: 13px;
   line-height: 1.6;
 
-  /* Subtle grid background */
   background-image:
     linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
@@ -59,22 +63,19 @@ body {
 
 /* ── Layout ───────────────────────────────────────────────── */
 main {
-  max-width: 1100px;
+  width: 100%;
   margin: 0 auto;
-  padding: 48px 32px 80px;
+  padding: 32px;
 }
 
-/* Header */
 h1 {
   font-family: var(--display);
-  font-size: clamp(28px, 4vw, 46px);
+  font-size: clamp(24px, 4vw, 32px);
   font-weight: 800;
   letter-spacing: -0.02em;
   line-height: 1;
   color: var(--text);
   margin-bottom: 10px;
-
-  /* accent underline */
   position: relative;
   display: inline-block;
 }
@@ -95,7 +96,8 @@ h1::after {
   font-family: var(--mono);
   font-size: 12px;
   color: var(--text-muted);
-  margin: 24px 0 40px;
+  margin-top: 10px;
+  margin-bottom: 20px;
   letter-spacing: 0.04em;
 }
 
@@ -116,12 +118,24 @@ h1::after {
   align-items: start;
 }
 
+.right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  position: sticky;
+  top: 32px;
+}
+
 .panel {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  overflow: hidden;
+  overflow-y: scroll;
   transition: border-color 0.2s;
+  height: calc(100vh - 64px);
+  /* hide scrollbars */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .panel:hover {
@@ -135,6 +149,8 @@ h1::after {
   padding: 14px 20px;
   border-bottom: 1px solid var(--border);
   background: var(--surface-2);
+  position: sticky;
+  top: 0;
 }
 
 .panel__dot {
@@ -155,6 +171,9 @@ h1::after {
 
 .panel__body {
   padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 0; /* managed per-section with margin-top */
 }
 
 /* ── Dropzone ─────────────────────────────────────────────── */
@@ -164,7 +183,7 @@ h1::after {
   align-items: center;
   justify-content: center;
   gap: 12px;
-  padding: 48px 24px;
+  padding: 36px 24px;
   cursor: pointer;
 
   border: 1.5px dashed var(--border-hi);
@@ -208,8 +227,15 @@ h1::after {
     inset 0 0 30px var(--accent-glow);
 }
 
+/* File selected state */
+#dropzone.has-file {
+  border-style: solid;
+  border-color: var(--accent-dim);
+  background: rgba(57, 255, 154, 0.04);
+}
+
 .dropzone__icon {
-  font-size: 32px;
+  font-size: 28px;
   line-height: 1;
   filter: grayscale(0.5);
   transition:
@@ -232,12 +258,201 @@ h1::after {
   color: var(--text);
 }
 
+.dropzone__filename {
+  font-size: 11px;
+  color: var(--accent);
+  background: var(--accent-glow);
+  padding: 3px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--accent-dim);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Config section ───────────────────────────────────────── */
+.config-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+
+.config-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.config-label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.config-label span {
+  font-size: 9px;
+  color: var(--text-muted);
+  opacity: 0.6;
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 400;
+}
+
+.config-textarea {
+  width: 100%;
+  min-height: 80px;
+  resize: vertical;
+  background: var(--surface-2);
+  border: 1px solid var(--border-hi);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 11px;
+  line-height: 1.7;
+  padding: 10px 12px;
+  outline: none;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+  word-break: break-all;
+}
+
+.config-textarea:focus {
+  border-color: var(--accent-dim);
+  box-shadow: 0 0 0 2px rgba(57, 255, 154, 0.08);
+}
+
+/* Power-of-2 segmented control */
+.pow2-control {
+  display: flex;
+  background: var(--surface-2);
+  border: 1px solid var(--border-hi);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.pow2-control input[type="radio"] {
+  display: none;
+}
+
+.pow2-control label {
+  flex: 1;
+  text-align: center;
+  padding: 8px 4px;
+  font-size: 11px;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-right: 1px solid var(--border);
+  transition:
+    background 0.12s,
+    color 0.12s;
+  user-select: none;
+  font-family: var(--mono);
+}
+
+.pow2-control label:last-of-type {
+  border-right: none;
+  border-top-right-radius: var(--radius);
+  border-bottom-right-radius: var(--radius);
+}
+
+.pow2-control label:first-of-type {
+  border-top-left-radius: var(--radius);
+  border-bottom-left-radius: var(--radius);
+}
+
+.pow2-control input[type="radio"]:checked + label {
+  background: var(--accent-glow);
+  color: var(--accent);
+  font-weight: 500;
+  box-shadow: inset 0 0 0 1px var(--accent-dim);
+}
+
+.pow2-control label:hover {
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-dim);
+}
+
+/* ── Generate button ──────────────────────────────────────── */
+.generate-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  margin-top: 24px;
+  padding: 14px 24px;
+  background: var(--accent);
+  color: #04120a;
+  border: none;
+  border-radius: var(--radius);
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    box-shadow 0.15s,
+    transform 0.1s,
+    opacity 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+
+.generate-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.15) 0%,
+    transparent 60%
+  );
+  pointer-events: none;
+}
+
+.generate-btn:hover:not(:disabled) {
+  background: #5fffac;
+  box-shadow:
+    0 0 20px rgba(57, 255, 154, 0.4),
+    0 4px 12px rgba(0, 0, 0, 0.4);
+  transform: translateY(-1px);
+}
+
+.generate-btn:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 0 10px rgba(57, 255, 154, 0.2);
+}
+
+.generate-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.generate-btn.loading {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.generate-btn__icon {
+  font-size: 15px;
+}
+
 /* ── Progress ─────────────────────────────────────────────── */
 .progress-container {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-top: 20px;
 }
 
 .progress-track {
@@ -267,12 +482,11 @@ h1::after {
 
 /* ── Status ───────────────────────────────────────────────── */
 .status {
-  margin-top: 16px;
+  margin-block: 10px;
   font-size: 11px;
   padding: 10px 14px;
   border-radius: var(--radius);
   border-left: 3px solid transparent;
-  min-height: 36px;
   transition: all 0.2s;
   display: flex;
   align-items: center;
@@ -305,12 +519,17 @@ h1::after {
 .downloads {
   display: flex;
   flex-direction: column;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.downloads:empty {
+  display: none;
 }
 
 .download-btn {
   display: flex;
   align-items: center;
-  margin-top: 10px;
   gap: 10px;
   padding: 12px 16px;
   background: var(--surface-2);
@@ -335,12 +554,7 @@ h1::after {
   box-shadow: 0 0 12px var(--accent-glow);
 }
 
-/* ── Atlas preview (panel right) ──────────────────────────── */
-.preview-panel {
-  position: sticky;
-  top: 32px;
-}
-
+/* ── Atlas preview (right panel) ──────────────────────────── */
 .preview-placeholder {
   display: flex;
   flex-direction: column;
@@ -364,7 +578,14 @@ h1::after {
   aspect-ratio: 1;
   object-fit: contain;
   border-radius: var(--radius);
-  background: #000;
+  /* background: #000; */
+  /* squares for the background as it is a transparent image */
+
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 20px 20px;
+
   image-rendering: pixelated;
   border: 1px solid var(--border);
 }
@@ -374,7 +595,7 @@ h1::after {
   .workspace {
     grid-template-columns: 1fr;
   }
-  .preview-panel {
+  .right-column {
     position: static;
   }
 }
