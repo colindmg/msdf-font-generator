@@ -1,0 +1,380 @@
+/* ============================================================
+  MSDF Font Generator — Dark Lab Theme
+============================================================ */
+
+@import url("https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Syne:wght@700;800&display=swap");
+
+/* ── Variables ────────────────────────────────────────────── */
+:root {
+  --bg: #0b0d11;
+  --surface: #111318;
+  --surface-2: #181b22;
+  --border: #22262f;
+  --border-hi: #2e3340;
+
+  --accent: #39ff9a;
+  --accent-dim: #1c7a4a;
+  --accent-glow: rgba(57, 255, 154, 0.15);
+
+  --text: #e2e6ef;
+  --text-muted: #5a6175;
+  --text-dim: #8892a4;
+
+  --red: #ff4d6a;
+  --amber: #ffb830;
+
+  --radius: 6px;
+  --radius-lg: 12px;
+  --mono: "DM Mono", "Courier New", monospace;
+  --display: "Syne", sans-serif;
+}
+
+/* ── Reset & Base ─────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.6;
+
+  /* Subtle grid background */
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* ── Layout ───────────────────────────────────────────────── */
+main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 48px 32px 80px;
+}
+
+/* Header */
+h1 {
+  font-family: var(--display);
+  font-size: clamp(28px, 4vw, 46px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--text);
+  margin-bottom: 10px;
+
+  /* accent underline */
+  position: relative;
+  display: inline-block;
+}
+
+h1::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 40px;
+  height: 3px;
+  background: var(--accent);
+  border-radius: 2px;
+  box-shadow: 0 0 10px var(--accent);
+}
+
+.subtitle {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-muted);
+  margin: 24px 0 40px;
+  letter-spacing: 0.04em;
+}
+
+.subtitle code {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--accent);
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 11px;
+}
+
+/* Two-column layout */
+.workspace {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.panel:hover {
+  border-color: var(--border-hi);
+}
+
+.panel__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+}
+
+.panel__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent);
+}
+
+.panel__title {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.panel__body {
+  padding: 24px;
+}
+
+/* ── Dropzone ─────────────────────────────────────────────── */
+#dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 48px 24px;
+  cursor: pointer;
+
+  border: 1.5px dashed var(--border-hi);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+
+  transition:
+    border-color 0.2s,
+    background 0.2s,
+    box-shadow 0.2s;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+
+#dropzone::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at 50% 120%,
+    var(--accent-glow),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+
+#dropzone:hover::before,
+#dropzone.drag-over::before {
+  opacity: 1;
+}
+
+#dropzone:hover,
+#dropzone.drag-over {
+  border-color: var(--accent);
+  background: #12161f;
+  box-shadow:
+    0 0 0 1px var(--accent-dim),
+    inset 0 0 30px var(--accent-glow);
+}
+
+.dropzone__icon {
+  font-size: 32px;
+  line-height: 1;
+  filter: grayscale(0.5);
+  transition:
+    transform 0.2s,
+    filter 0.2s;
+}
+
+#dropzone:hover .dropzone__icon,
+#dropzone.drag-over .dropzone__icon {
+  filter: none;
+  transform: scale(1.1);
+}
+
+.dropzone__label {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.dropzone__label strong {
+  color: var(--text);
+}
+
+/* ── Progress ─────────────────────────────────────────────── */
+.progress-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.progress-track {
+  flex: 1;
+  height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--accent);
+  border-radius: 2px;
+  box-shadow: 0 0 8px var(--accent);
+  transition: width 0.15s ease-out;
+}
+
+#progressText {
+  font-size: 10px;
+  color: var(--text-muted);
+  min-width: 32px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Status ───────────────────────────────────────────────── */
+.status {
+  margin-top: 16px;
+  font-size: 11px;
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  border-left: 3px solid transparent;
+  min-height: 36px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.status:empty {
+  display: none;
+}
+
+.status--info {
+  background: rgba(136, 146, 164, 0.06);
+  border-left-color: var(--text-muted);
+  color: var(--text-dim);
+}
+
+.status--success {
+  background: rgba(57, 255, 154, 0.06);
+  border-left-color: var(--accent);
+  color: var(--accent);
+}
+
+.status--error {
+  background: rgba(255, 77, 106, 0.07);
+  border-left-color: var(--red);
+  color: var(--red);
+}
+
+/* ── Download buttons ─────────────────────────────────────── */
+.downloads {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.download-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-hi);
+  border-radius: var(--radius);
+  color: var(--text);
+  text-decoration: none;
+  font-family: var(--mono);
+  font-size: 12px;
+  transition:
+    border-color 0.15s,
+    background 0.15s,
+    color 0.15s,
+    box-shadow 0.15s;
+  cursor: pointer;
+}
+
+.download-btn:hover {
+  background: var(--accent-glow);
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+
+/* ── Atlas preview (panel right) ──────────────────────────── */
+.preview-panel {
+  position: sticky;
+  top: 32px;
+}
+
+.preview-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 260px;
+  color: var(--text-muted);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  text-align: center;
+}
+
+.preview-placeholder svg {
+  opacity: 0.2;
+}
+
+.atlas-preview {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: contain;
+  border-radius: var(--radius);
+  background: #000;
+  image-rendering: pixelated;
+  border: 1px solid var(--border);
+}
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 720px) {
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+  .preview-panel {
+    position: static;
+  }
+}
