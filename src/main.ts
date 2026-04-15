@@ -113,9 +113,11 @@ async function handleGenerate(file: File) {
   console.log(file);
 
   try {
+    const base = import.meta.env.BASE_URL;
+
     const { font, atlas } = await generateMSDF(fontUrl as unknown as File, {
-      workerUrl: "/msdfgen/worker.bundled.js",
-      wasmUrl: "/msdfgen/msdfgen.wasm",
+      workerUrl: `${base}msdfgen/worker.bundled.js`,
+      wasmUrl: `${base}msdfgen/msdfgen.wasm`,
       charset,
       fontSize,
       textureSize: [texSize, texSize],
